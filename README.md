@@ -52,7 +52,7 @@ setA((res) => ++res);
 
 ### useChanged
 
-Known if value changed in **this effect callback , or aka event loop**
+Known if value changed in **current effect callback , or aka event loop**
 
 ```typescript
 const aChanged = useChanged(a);

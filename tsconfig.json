@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "declarationDir": "esm",
+        "composite": true,
+        "strict": true,
+        "jsx": "react-jsx",
+        "sourceMap": true,
+        "lib": [
+            "ESNext",
+            "DOM",
+        ]
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.d.ts",
+        "src/**/*.tsx"
+    ]
+}

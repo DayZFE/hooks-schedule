@@ -288,17 +288,21 @@ Superior usage, combine multiple schedule refs together
 
 ```typescript
 const scheduleRef = useScheduleCombine(
+  (aNotChanged, started) => aNotChanged && started,
   useScheduleFilter(
-    [usePreviousRef(a), useStateRef(a)],
-    (preA, nowA) => preA !== nowA,
-    [a]
+    useScheduleCombine(
+      (preA, nowA) => preA !== nowA,
+      usePreviousRef(a),
+      useStateRef(a)
+    ),
+    (aChanged) => !aChanged
   ),
   useStarted()
 );
 
 useEffect(() => {
   if (scheduleRef.current) {
-    // only run when a changed, and started
+    // only run when a not changed and started
   }
 }, [a, b, c]);
 ```

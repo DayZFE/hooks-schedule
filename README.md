@@ -281,3 +281,28 @@ useEffect(() => {
   // ...
 }, [timer]);
 ```
+
+## combination
+
+Superior usage, combine multiple schedule refs together
+
+```typescript
+const scheduleRef = useScheduleCombine(
+  useScheduleFilter(
+    [usePreviousRef(a), useStateRef(a)],
+    (preA, nowA) => preA !== nowA,
+    [a]
+  ),
+  useStarted()
+);
+
+useEffect(() => {
+  if (scheduleRef.current) {
+    // only run when a changed, and started
+  }
+}, [a, b, c]);
+```
+
+We are doing works to make combination more useful, but now, there is only two combination operations
+
+useScheduleCombine and useFilter

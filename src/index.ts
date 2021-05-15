@@ -1,42 +1,23 @@
 import { DependencyList, useEffect, useRef, useState } from "react";
 
 /**
- * 将 state or memorized 转化成 ref（按照特定依赖）
+ * check the if the first effect callback already called
  *
  * @export
- * @template T
- * @param {T} state
  * @return {*}
  */
-export function useStateRef<T>(state: T, deps: DependencyList = []) {
-  const result = useRef<T | undefined>();
-  useEffect(() => {
-    result.current = state;
-    // eslint-disable-next-line
-  }, [state, ...deps]);
-  return result;
-}
-
-/**
- * 指定依赖的初次调度是否已进行
- *
- * @export
- * @param {DependencyList} [deps=[]]
- * @return {*}
- */
-export function useStartedRef(deps: DependencyList = []) {
+export function useStartedRef() {
   const result = useRef(false);
   useEffect(() => {
     Promise.resolve().then(() => {
       result.current = true;
     });
-    // eslint-disable-next-line
-  }, deps);
+  }, []);
   return result;
 }
 
 /**
- * 当前空间数据是否被销毁
+ * check if the scope already destroyed
  *
  * @export
  * @return {*}
@@ -53,7 +34,23 @@ export function useEndRef() {
 }
 
 /**
- * 获取前值的 ref（按照特定依赖）
+ * change a memorized state to ref value
+ *
+ * @export
+ * @template T
+ * @param {T} state
+ * @return {*}
+ */
+export function useStateRef<T>(state: T) {
+  const result = useRef<T | undefined>();
+  useEffect(() => {
+    result.current = state;
+  }, [state]);
+  return result;
+}
+
+/**
+ * get the previous ref value of memorized state
  *
  * @export
  * @template T
@@ -72,31 +69,43 @@ export function usePreviousRef<T>(state: T) {
 }
 
 /**
- * 获取历史（按照特定依赖）
+ * get the history ref value of certain dependencies
  *
  * @export
  * @template T
- * @param {T} state
- * @param {DependencyList} [deps=[]]
+ * @param {T} deps
  * @param {number} [length=3]
  * @return {*}
  */
-export function useHistoryRef<T>(
-  state: T,
-  deps: DependencyList = [],
-  length = 3
-) {
+export function useHistoryRef<T extends DependencyList>(deps: T, length = 3) {
   const result = useRef<T[]>([]);
   useEffect(() => {
-    result.current.unshift(state);
+    result.current.unshift(deps);
     result.current.length = length;
-    // eslint-disable-next-line
-  }, [state, ...deps]);
+  }, deps);
   return result;
 }
 
 /**
- * get a timer cont from 0
+ * log the effect time of dependencies
+ *
+ * @export
+ * @param {DependencyList} deps
+ * @return {*}
+ */
+export function useEffectTimeRef(deps: DependencyList) {
+  const result = useRef<Date | null>(null);
+
+  useEffect(() => {
+    result.current = new Date();
+  }, deps);
+  return result;
+}
+
+/**
+ * get a timer that emits Date type time data
+ *
+ * by interval of certain ms
  *
  * @param {number} [n=1000]
  * @return {*}

@@ -1,8 +1,27 @@
 # most comfort way to handle schedule issue in react hooks
 
 > Support vite, cra, typescript
+> Fully eslint support
 
 ```typescript
+const startedRef = useStartedRef();
+useEffect(() => {
+  if (startedRef.current) {
+    // ignore the initialization of a
+    // which means the value in useState(()=>xxx) will be ignored
+  }
+}, [a]);
+
+const endRef = useEndRef();
+useEffect(() => {
+  const timeout = setTimeout(() => {
+    if (endRef.current) {
+      // no need to use return callback
+      clearTimeout(timeout);
+    }
+  }, 1000);
+}, []);
+
 const aRef = useStateRef(a);
 
 useEffect(() => {
@@ -27,6 +46,9 @@ useEffect(() => {
     someCb();
   }
 }, [a, aHistoryRef, someCb]);
+
+// transform ref a to state (scheduled by a)
+const historyState = useStateFromRef(aHistoryRef, [a]);
 
 const aTimeRef = useEffectTimeRef([a]);
 useEffect(() => {
@@ -225,6 +247,23 @@ useEffect(() => {
   // get time of when a,b take effect
   console.log(timeRef.current);
 }, [a, b, c, d, e]);
+```
+
+## State apis
+
+State apis will take effect in scheduling, be aware of what you are doing
+
+### useStateFromRef
+
+Trans form a ref to a state, by certain dependencies
+
+```typescript
+const ref = useRef<any>();
+const refState = useStateFromRef(ref, [a, b, c]);
+useEffect(() => {
+  // will run every [a,b,c] took effect
+  console.log(ref.current);
+}, [refState]);
 ```
 
 ### useTimer

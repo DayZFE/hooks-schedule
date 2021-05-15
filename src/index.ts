@@ -1,4 +1,10 @@
-import { DependencyList, useEffect, useRef, useState } from "react";
+import {
+  DependencyList,
+  MutableRefObject,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 /**
  * check the if the first effect callback already called
@@ -84,6 +90,26 @@ export function useHistoryRef<T extends DependencyList>(deps: T, length = 3) {
     result.current.length = length;
   }, deps);
   return result;
+}
+
+/**
+ * translate ref to certain state by dependencies
+ *
+ * @export
+ * @template T
+ * @param {MutableRefObject<T>} ref
+ * @param {DependencyList} deps
+ * @return {*}
+ */
+export function useStateFromRef<T>(
+  ref: MutableRefObject<T>,
+  deps: DependencyList
+) {
+  const [state, setState] = useState(() => ref.current);
+  useEffect(() => {
+    setState(ref.current);
+  }, deps);
+  return state;
 }
 
 /**

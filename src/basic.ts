@@ -116,7 +116,7 @@ export function useEffectTimeRef(deps: DependencyList) {
  * @param {DependencyList} [deps]
  * @return {*}
  */
-export function useStateFromRef<T>(
+export function useRefToState<T>(
   ref: MutableRefObject<T>,
   deps?: DependencyList
 ) {

@@ -5,7 +5,7 @@ export {
   usePreviousRef,
   useHistoryRef,
   useEffectTimeRef,
-  useStateFromRef,
+  useRefToState,
   useTimer,
 } from "./basic";
 

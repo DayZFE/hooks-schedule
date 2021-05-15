@@ -48,7 +48,7 @@ useEffect(() => {
 }, [a, aHistoryRef, someCb]);
 
 // transform ref a to state (scheduled by a)
-const historyState = useStateFromRef(aHistoryRef, [a]);
+const historyState = useRefToState(aHistoryRef, [a]);
 
 const aTimeRef = useEffectTimeRef([a]);
 useEffect(() => {
@@ -253,13 +253,13 @@ useEffect(() => {
 
 State apis will take effect in scheduling, be aware of what you are doing
 
-### useStateFromRef
+### useRefToState
 
 Trans form a ref to a state, by certain dependencies
 
 ```typescript
 const ref = useRef<any>();
-const refState = useStateFromRef(ref, [a, b, c]);
+const refState = useRefToState(ref, [a, b, c]);
 useEffect(() => {
   // will run every [a,b,c] took effect
   console.log(ref.current);

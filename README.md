@@ -67,7 +67,28 @@ useEffect(() => {
     someCb();
   }
 }, [timer, aTimeRef, someCb]);
+
+// like useMemo, but returns a ref
+const memoRef = useMemoRef(() => ({ a, b }), [a, b]);
+
+// callback with no dependency
+// but only use first param's return value
+const noDepCb = useNoDepCallback(
+  () => ({ a, b }),
+  ({ a, b }) => {
+    // only use a,b
+    // no other dependency used
+  }
+);
 ```
+
+> Except useEffectTimeRef and useHistoryRef, all apis' dependencyList param is optional
+
+> Schedule tag is used to help you with schedule issue, so we use ref to do it, except some situation
+> that sure indeed needs a new scheduler, such as useTimer
+
+> Things like previous value, history, combined ref(useMemoRef) and so on, they must be ref, because
+> they are all scheduled by the origin memorized state
 
 ## Introduction
 

@@ -1,10 +1,4 @@
-import {
-  DependencyList,
-  MutableRefObject,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { DependencyList, MutableRefObject, useEffect, useRef } from "react";
 
 /**
  * check the if the first effect callback already called
@@ -74,6 +68,26 @@ export function usePreviousRef<T>(state: T) {
 }
 
 /**
+ * output a ref that contains all the relative data
+ *
+ * @export
+ * @template T
+ * @param {() => T} cb
+ * @param {DependencyList} deps
+ * @return {*}  {MutableRefObject<T>}
+ */
+export function useMemoRef<T>(
+  cb: () => T,
+  deps?: DependencyList
+): MutableRefObject<T> {
+  const result = useRef(cb());
+  useEffect(() => {
+    result.current = cb();
+  }, deps);
+  return result;
+}
+
+/**
  * get the history ref value of certain dependencies
  *
  * @export
@@ -105,54 +119,4 @@ export function useEffectTimeRef(deps: DependencyList) {
     result.current = new Date();
   }, deps);
   return result;
-}
-
-/**
- * deps?: DependencyList
- *
- * @export
- * @template T
- * @param {MutableRefObject<T>} ref
- * @param {DependencyList} [deps]
- * @return {*}
- */
-export function useRefToState<T>(
-  ref: MutableRefObject<T>,
-  deps?: DependencyList
-) {
-  const [state, setState] = useState(() => ref.current);
-  useEffect(() => {
-    setState(ref.current);
-  }, deps);
-  return state;
-}
-
-/**
- * get a timer that emits Date type time data
- *
- * by interval of certain ms
- *
- * @param {number} [n=1000]
- * @return {*}
- */
-export function useTimer(n: number = 1000) {
-  const [timer, setTimer] = useState(() => new Date());
-  const preTimeRef = usePreviousRef(timer);
-  const endRef = useEndRef();
-  useEffect(() => {
-    function loop() {
-      if (endRef.current) return;
-      const now = new Date();
-      if (!preTimeRef.current) {
-        preTimeRef.current = now;
-      } else if (now.getTime() - preTimeRef.current.getTime() >= n) {
-        preTimeRef.current = now;
-        setTimer(now);
-      }
-      requestAnimationFrame(loop);
-    }
-    requestAnimationFrame(loop);
-  }, [n, endRef, preTimeRef]);
-
-  return timer;
 }

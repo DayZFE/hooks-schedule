@@ -11,13 +11,13 @@ import { DependencyList, MutableRefObject, useEffect, useRef } from "react";
  */
 export function useScheduleFilter<T>(
   filter: (val: T) => boolean,
-  ref: MutableRefObject<T>
+  ref: MutableRefObject<T>,
+  deps?: DependencyList
 ): MutableRefObject<boolean> {
   const result = useRef<boolean>(false);
   useEffect(() => {
     result.current = filter(ref.current);
-  });
-  useEffect(() => {}, []);
+  }, deps);
   return result;
 }
 
@@ -31,11 +31,12 @@ export function useScheduleFilter<T>(
  */
 export function useScheduleCombine(
   combineCb: (...val: boolean[]) => boolean,
-  refs: MutableRefObject<boolean>[]
+  refs: MutableRefObject<boolean>[],
+  deps?: DependencyList
 ): MutableRefObject<boolean> {
   const result = useRef<boolean>(false);
   useEffect(() => {
     result.current = combineCb(...refs.map((el) => el.current));
-  });
+  }, deps);
   return result;
 }

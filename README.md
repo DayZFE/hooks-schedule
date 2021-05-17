@@ -75,11 +75,15 @@ const memoRef = useMemoRef(() => ({ a, b }), [a, b]);
 // but only use first param's return value
 const noDepCb = useNoDepCallback(
   () => ({ a, b }),
-  ({ a, b }) => {
+  (ctx, ...otherParams) => {
+    setTimeout(() => {
+      console.log(ctx.current);
+    }, 1000);
     // only use a,b
     // no other dependency used
   }
 );
+noDepCb(...params);
 ```
 
 > Except useEffectTimeRef and useHistoryRef, all apis' dependencyList param is optional

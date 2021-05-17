@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { MutableRefObject, useCallback } from "react";
 import { useMemoRef } from "./basic";
 
 /**
@@ -13,11 +13,13 @@ import { useMemoRef } from "./basic";
  * @param {(val: T) => R} cb
  * @return {*}
  */
-export function useNoDepCallback<T, R>(dataCb: () => T, cb: (val: T) => R) {
+export function useNoDepCallback<T, P extends any[], R>(
+  dataCb: () => T,
+  cb: (val: MutableRefObject<T>, ...args: P) => R
+) {
   const memoRef = useMemoRef<T>(dataCb);
-  const result = useCallback(() => {
-    const dep = memoRef.current;
-    return cb(dep);
+  const result = useCallback((args: P) => {
+    return cb(memoRef, ...args);
   }, []);
   return result;
 }

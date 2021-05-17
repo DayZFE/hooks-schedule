@@ -97,8 +97,8 @@
         "affectsGlobalScope": false
       },
       "../src/callback.ts": {
-        "version": "b0146bd3eb83ea0cb6224bd51ffddfb42b19fae0eeff89e5c3fdd7710364c828",
-        "signature": "0310c39e561e06eeaa90150f8b52a9b8c568fe0ee4ea369ceb5bf01a76b97955",
+        "version": "0a1041ec936f60712ccd116f746a1fb874271e0c55edd2500e1b7c4dcfb0ffaf",
+        "signature": "8494e7212d5e15fe454bd59af3c93083d1bc36c1392c171ecfef536fe20dac93",
         "affectsGlobalScope": false
       },
       "../src/combination.ts": {
@@ -207,6 +207,9 @@
         "../node_modules/@types/react/index.d.ts"
       ],
       "../src/basic.ts": [
+        "../node_modules/@types/react/index.d.ts"
+      ],
+      "../src/callback.ts": [
         "../node_modules/@types/react/index.d.ts"
       ],
       "../src/combination.ts": [

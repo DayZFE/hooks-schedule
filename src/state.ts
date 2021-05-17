@@ -1,4 +1,10 @@
-import { DependencyList, MutableRefObject, useEffect, useState } from "react";
+import {
+  DependencyList,
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { useEndRef, usePreviousRef } from "./basic";
 
 /**
@@ -33,20 +39,21 @@ export function useTimer(n: number = 1000) {
   const [timer, setTimer] = useState(() => new Date());
   const preTimeRef = usePreviousRef(timer);
   const endRef = useEndRef();
-  useEffect(() => {
-    function loop() {
-      if (endRef.current) return;
-      const now = new Date();
-      if (!preTimeRef.current) {
-        preTimeRef.current = now;
-      } else if (now.getTime() - preTimeRef.current.getTime() >= n) {
-        preTimeRef.current = now;
-        setTimer(now);
-      }
-      requestAnimationFrame(loop);
+  const handleRaf = useCallback(() => {
+    if (endRef.current) return;
+    const now = new Date();
+    if (!preTimeRef.current) {
+      preTimeRef.current = now;
+      setTimer(now);
+    } else if (now.getTime() - preTimeRef.current.getTime() >= n) {
+      preTimeRef.current = now;
+      setTimer(now);
     }
-    requestAnimationFrame(loop);
+    requestAnimationFrame(handleRaf);
   }, [n, endRef, preTimeRef]);
+  useEffect(() => {
+    requestAnimationFrame(handleRaf);
+  }, [handleRaf]);
 
   return timer;
 }

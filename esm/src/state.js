@@ -49,22 +49,23 @@ function useTimer(n) {
     var _a = __read(react_1.useState(function () { return new Date(); }), 2), timer = _a[0], setTimer = _a[1];
     var preTimeRef = basic_1.usePreviousRef(timer);
     var endRef = basic_1.useEndRef();
-    react_1.useEffect(function () {
-        function loop() {
-            if (endRef.current)
-                return;
-            var now = new Date();
-            if (!preTimeRef.current) {
-                preTimeRef.current = now;
-            }
-            else if (now.getTime() - preTimeRef.current.getTime() >= n) {
-                preTimeRef.current = now;
-                setTimer(now);
-            }
-            requestAnimationFrame(loop);
+    var handleRaf = react_1.useCallback(function () {
+        if (endRef.current)
+            return;
+        var now = new Date();
+        if (!preTimeRef.current) {
+            preTimeRef.current = now;
+            setTimer(now);
         }
-        requestAnimationFrame(loop);
+        else if (now.getTime() - preTimeRef.current.getTime() >= n) {
+            preTimeRef.current = now;
+            setTimer(now);
+        }
+        requestAnimationFrame(handleRaf);
     }, [n, endRef, preTimeRef]);
+    react_1.useEffect(function () {
+        requestAnimationFrame(handleRaf);
+    }, [handleRaf]);
     return timer;
 }
 exports.useTimer = useTimer;

@@ -107,7 +107,7 @@
         "affectsGlobalScope": false
       },
       "../src/state.ts": {
-        "version": "f61eda728083a96b17802b3c7739290b32afac35f07f2a11cb7da5e6dd9b34b8",
+        "version": "5b1174d7ea0c9b7d3220fd98e97ed666554727080665816d0247f5f11cee0187",
         "signature": "2227d393b347e7a23577f189d8e23ba86659428f3df317cd8e49e4c1b0e93554",
         "affectsGlobalScope": false
       },

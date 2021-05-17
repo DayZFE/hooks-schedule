@@ -30,6 +30,8 @@ useEffect(() => {
 }, [aRef, someCb]);
 
 const aPreviousRef = usePreviousRef(a);
+// skip 2 value insteadOf one
+const aSkip2PreviousRef = usePreviousRef(a, 2);
 useEffect(() => {
   if (aPreviousRef.current !== a) {
     // only call when a change
@@ -51,6 +53,8 @@ useEffect(() => {
 const historyState = useRefToState(aHistoryRef, [a]);
 
 const aTimeRef = useEffectTimeRef([a]);
+// like usePreviousRef, skip certain value
+const aPreTimeRef = usePreviousEffectTimeRef([a], 2);
 useEffect(() => {
   if (aTimeRef.current.getTime() < new Date("2020-06-02 22:32:11").getTime()) {
     // only call in certain time period
@@ -86,7 +90,7 @@ const noDepCb = useNoDepCallback(
 noDepCb(...params);
 ```
 
-> Except useEffectTimeRef and useHistoryRef, all apis' dependencyList param is optional
+> Except useHistoryRef, all apis' dependencyList param is optional
 
 > Schedule tag is used to help you with schedule issue, so we use ref to do it, except some situation
 > that sure indeed needs a new scheduler, such as useTimer
@@ -220,7 +224,7 @@ Get the previous value of certain state
 
 ```typescript
 const aRef = usePreviousRef(a);
-
+const aSkip2 = usePreviousRef(a, 2);
 useEffect(() => {
   if (aRef.current !== a) {
     // only when a changed

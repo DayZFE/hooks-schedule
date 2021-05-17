@@ -4,12 +4,12 @@ import {
   useStateRef,
   usePreviousRef,
   useHistoryRef,
-  useEffectTimeRef,
   useMemoRef,
 } from "./basic";
 import { useRefToState, useTimer } from "./state";
 import { useNoDepCallback } from "./callback";
 import { useScheduleFilter, useScheduleCombine } from "./combination";
+import { useEffectTimeRef, usePreviousEffectTimeRef } from "./time";
 
 export {
   useStartedRef,
@@ -18,6 +18,7 @@ export {
   usePreviousRef,
   useHistoryRef,
   useEffectTimeRef,
+  usePreviousEffectTimeRef,
   useMemoRef,
   useRefToState,
   useTimer,

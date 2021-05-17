@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useEffectTimeRef = exports.useHistoryRef = exports.useMemoRef = exports.usePreviousRef = exports.useStateRef = exports.useEndRef = exports.useStartedRef = void 0;
+exports.useHistoryRef = exports.useMemoRef = exports.usePreviousRef = exports.useStateRef = exports.useEndRef = exports.useStartedRef = void 0;
 var react_1 = require("react");
 /**
  * check the if the first effect callback already called
@@ -49,19 +49,28 @@ function useStateRef(state) {
 }
 exports.useStateRef = useStateRef;
 /**
- * get the previous ref value of memorized state
+ * get the previous ref value of memorized state after certain buffer
  *
  * @export
  * @template T
  * @param {T} state
+ * @param {number} [bufferCount=0]
  * @return {*}
  */
-function usePreviousRef(state) {
+function usePreviousRef(state, bufferCount) {
+    if (bufferCount === void 0) { bufferCount = 0; }
     var result = react_1.useRef();
+    var buffer = react_1.useRef(0);
     react_1.useEffect(function () {
-        Promise.resolve().then(function () {
-            result.current = state;
-        });
+        if (buffer.current < bufferCount) {
+            buffer.current++;
+        }
+        else {
+            buffer.current = 0;
+            Promise.resolve().then(function () {
+                result.current = state;
+            });
+        }
     }, [state]);
     return result;
 }
@@ -102,19 +111,4 @@ function useHistoryRef(deps, length) {
     return result;
 }
 exports.useHistoryRef = useHistoryRef;
-/**
- * log the effect time of dependencies
- *
- * @export
- * @param {DependencyList} deps
- * @return {*}
- */
-function useEffectTimeRef(deps) {
-    var result = react_1.useRef(null);
-    react_1.useEffect(function () {
-        result.current = new Date();
-    }, deps);
-    return result;
-}
-exports.useEffectTimeRef = useEffectTimeRef;
 //# sourceMappingURL=basic.js.map

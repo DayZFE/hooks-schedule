@@ -50,19 +50,26 @@ export function useStateRef<T>(state: T) {
 }
 
 /**
- * get the previous ref value of memorized state
+ * get the previous ref value of memorized state after certain buffer
  *
  * @export
  * @template T
  * @param {T} state
+ * @param {number} [bufferCount=0]
  * @return {*}
  */
-export function usePreviousRef<T>(state: T) {
+export function usePreviousRef<T>(state: T, bufferCount: number = 0) {
   const result = useRef<T | undefined>();
+  const buffer = useRef(0);
   useEffect(() => {
-    Promise.resolve().then(() => {
-      result.current = state;
-    });
+    if (buffer.current < bufferCount) {
+      buffer.current++;
+    } else {
+      buffer.current = 0;
+      Promise.resolve().then(() => {
+        result.current = state;
+      });
+    }
   }, [state]);
   return result;
 }
@@ -101,22 +108,6 @@ export function useHistoryRef<T extends DependencyList>(deps: T, length = 3) {
   useEffect(() => {
     result.current.unshift(deps);
     result.current.length = length;
-  }, deps);
-  return result;
-}
-
-/**
- * log the effect time of dependencies
- *
- * @export
- * @param {DependencyList} deps
- * @return {*}
- */
-export function useEffectTimeRef(deps: DependencyList) {
-  const result = useRef<Date | null>(null);
-
-  useEffect(() => {
-    result.current = new Date();
   }, deps);
   return result;
 }

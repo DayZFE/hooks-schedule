@@ -92,8 +92,8 @@
         "affectsGlobalScope": false
       },
       "../src/basic.ts": {
-        "version": "b22e10fdb39d4acdc11705d04dd6dbb33d9de3cbaadb56d9878ce90de340ccfe",
-        "signature": "9a27c26d6b98266d5245747f1738794273161b491dbefcc04f49b6bcbeb8d007",
+        "version": "3c74e70730d24a4246774f0e319e0f39b7a20c956ea4b25c9247446b0fec28ec",
+        "signature": "4443a1f9943bba2d9b3a4deaf11ba7de45794faf7df60097a459f9a9a3e92a19",
         "affectsGlobalScope": false
       },
       "../src/callback.ts": {
@@ -111,9 +111,14 @@
         "signature": "2227d393b347e7a23577f189d8e23ba86659428f3df317cd8e49e4c1b0e93554",
         "affectsGlobalScope": false
       },
+      "../src/time.ts": {
+        "version": "09bc0e29b7508a63561ca70d5bb9b83f8fef13311707302361c493330930cfe7",
+        "signature": "6ee8101250eea70cec6bf5422b3e0ea8e0ed6f35e0e01272584400611bb1f2e8",
+        "affectsGlobalScope": false
+      },
       "../src/index.ts": {
-        "version": "19b1fae0f0bdc19dd98b60ac0ecaac4b885f29547154f504bf3ee64fc82368dc",
-        "signature": "ac192913b97acbd3b9576181a13589b7c9bcc94e66dae87d8fc6fa9c1dbee5c3",
+        "version": "d0ce23f97e0474fada76807785e8d4dbb6106a1b2f950dac41b22c57814ca43d",
+        "signature": "b4e5610c38e18e271e0623345d3052b442cca6fe1165da08699b3db9d05a9278",
         "affectsGlobalScope": false
       },
       "../src/judgement.ts": {
@@ -183,7 +188,8 @@
         "../src/basic.ts",
         "../src/callback.ts",
         "../src/combination.ts",
-        "../src/state.ts"
+        "../src/state.ts",
+        "../src/time.ts"
       ],
       "../src/judgement.ts": [
         "../node_modules/@types/react/index.d.ts",
@@ -194,6 +200,10 @@
         "../node_modules/@types/react/index.d.ts",
         "../node_modules/@types/react/jsx-runtime.d.ts",
         "../src/basic.ts"
+      ],
+      "../src/time.ts": [
+        "../node_modules/@types/react/index.d.ts",
+        "../node_modules/@types/react/jsx-runtime.d.ts"
       ]
     },
     "exportedModulesMap": {
@@ -219,12 +229,16 @@
         "../src/basic.ts",
         "../src/callback.ts",
         "../src/combination.ts",
-        "../src/state.ts"
+        "../src/state.ts",
+        "../src/time.ts"
       ],
       "../src/judgement.ts": [
         "../node_modules/@types/react/index.d.ts"
       ],
       "../src/state.ts": [
+        "../node_modules/@types/react/index.d.ts"
+      ],
+      "../src/time.ts": [
         "../node_modules/@types/react/index.d.ts"
       ]
     },
@@ -253,7 +267,8 @@
       "../src/combination.ts",
       "../src/index.ts",
       "../src/judgement.ts",
-      "../src/state.ts"
+      "../src/state.ts",
+      "../src/time.ts"
     ]
   },
   "version": "4.2.4"

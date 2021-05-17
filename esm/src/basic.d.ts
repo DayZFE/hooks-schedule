@@ -23,14 +23,15 @@ export declare function useEndRef(): MutableRefObject<boolean>;
  */
 export declare function useStateRef<T>(state: T): MutableRefObject<T | undefined>;
 /**
- * get the previous ref value of memorized state
+ * get the previous ref value of memorized state after certain buffer
  *
  * @export
  * @template T
  * @param {T} state
+ * @param {number} [bufferCount=0]
  * @return {*}
  */
-export declare function usePreviousRef<T>(state: T): MutableRefObject<T | undefined>;
+export declare function usePreviousRef<T>(state: T, bufferCount?: number): MutableRefObject<T | undefined>;
 /**
  * output a ref that contains all the relative data
  *
@@ -51,11 +52,3 @@ export declare function useMemoRef<T>(cb: () => T, deps?: DependencyList): Mutab
  * @return {*}
  */
 export declare function useHistoryRef<T extends DependencyList>(deps: T, length?: number): MutableRefObject<T[]>;
-/**
- * log the effect time of dependencies
- *
- * @export
- * @param {DependencyList} deps
- * @return {*}
- */
-export declare function useEffectTimeRef(deps: DependencyList): MutableRefObject<Date | null>;

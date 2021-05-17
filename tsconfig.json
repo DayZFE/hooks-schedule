@@ -1,20 +1,28 @@
 {
     "compilerOptions": {
-        "target": "ESNext",
-        "module": "ESNext",
+        "target": "ES5",
         "moduleResolution": "node",
         "declarationDir": "esm",
-        "esModuleInterop": false,
+        "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "isolatedModules": true,
         "composite": true,
         "strict": true,
         "jsx": "react-jsx",
+        "downlevelIteration": true,
+        "skipLibCheck": true,
+        "strictNullChecks": true,
         "sourceMap": true,
+        "baseUrl": ".",
         "lib": [
-            "ESNext",
-            "DOM",
-        ]
+            "ES2015",
+            "DOM"
+        ],
+        "paths": {
+            "@/*": [
+                "src/*"
+            ]
+        }
     },
     "include": [
         "src/**/*.ts",

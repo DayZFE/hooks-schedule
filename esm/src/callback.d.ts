@@ -11,4 +11,4 @@ import { MutableRefObject } from "react";
  * @param {(val: T) => R} cb
  * @return {*}
  */
-export declare function useNoDepCallback<T, P extends any[], R>(dataCb: () => T, cb: (val: MutableRefObject<T>, ...args: P) => R): (args: P) => R;
+export declare function useNoDepCallback<T, P extends any[], R>(dataCb: () => T, cb: (val: MutableRefObject<T>, ...args: P) => R): (...args: P) => R;

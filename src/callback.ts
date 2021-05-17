@@ -18,7 +18,7 @@ export function useNoDepCallback<T, P extends any[], R>(
   cb: (val: MutableRefObject<T>, ...args: P) => R
 ) {
   const memoRef = useMemoRef<T>(dataCb);
-  const result = useCallback((args: P) => {
+  const result = useCallback((...args: P) => {
     return cb(memoRef, ...args);
   }, []);
   return result;

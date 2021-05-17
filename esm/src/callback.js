@@ -38,7 +38,11 @@ var basic_1 = require("./basic");
  */
 function useNoDepCallback(dataCb, cb) {
     var memoRef = basic_1.useMemoRef(dataCb);
-    var result = react_1.useCallback(function (args) {
+    var result = react_1.useCallback(function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
         return cb.apply(void 0, __spreadArray([memoRef], __read(args)));
     }, []);
     return result;

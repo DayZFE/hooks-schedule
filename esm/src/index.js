@@ -21,7 +21,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from) {
     return to;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useDispatch = exports.useTimer = exports.useThrottle = exports.useDebounce = exports.useDelay = exports.useInfoRef = exports.useMemoRef = exports.useEndRef = exports.useStartedRef = void 0;
+exports.useDispatch = exports.DEFAULT_ACTION = exports.useTimer = exports.useThrottle = exports.useDebounce = exports.useDelay = exports.useInfoRef = exports.useMemoRef = exports.useEndRef = exports.useStartedRef = void 0;
 var react_1 = require("react");
 /**
  * 指定依赖的初次调度是否已进行
@@ -232,6 +232,8 @@ function useTimer(interval) {
     return time;
 }
 exports.useTimer = useTimer;
+var DEFAULT_ACTION = function () { return "__initialized__"; };
+exports.DEFAULT_ACTION = DEFAULT_ACTION;
 /**
  * 该 function 为 action，result 模式
  *
@@ -241,23 +243,16 @@ exports.useTimer = useTimer;
  * @return {*}
  */
 function useDispatch(func) {
-    var _a = __read(react_1.useState(function () { return function () { return "__initialized__"; }; }), 2), action = _a[0], setAction = _a[1];
+    var _a = __read(react_1.useState(function () { return exports.DEFAULT_ACTION; }), 2), action = _a[0], dispatch = _a[1];
     var _b = __read(react_1.useState(), 2), result = _b[0], setResult = _b[1];
     var funcRef = useMemoRef(func);
     react_1.useEffect(function () {
         var params = action();
-        if (params !== "__initialized__") {
+        if (params !== exports.DEFAULT_ACTION()) {
             setResult(funcRef.current.apply(funcRef, __spreadArray([], __read(params))));
         }
     }, [action]);
-    var dispatch = react_1.useCallback(function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        setAction(function () { return args; });
-    }, []);
-    return [dispatch, action, result];
+    return [action, dispatch, result];
 }
 exports.useDispatch = useDispatch;
 //# sourceMappingURL=index.js.map

@@ -92,8 +92,8 @@
         "affectsGlobalScope": false
       },
       "../src/index.ts": {
-        "version": "2580501b22ca58b40fd8afa760e6febe0315177888653b17fad908b47d5d80c7",
-        "signature": "1d4467305306f74578de12291ab9fc12a417a3b984120d691d912fb3c12b94b7",
+        "version": "30050b1ae299d6ff3636045fbc63f4752cddd7b61096064ffe118826d9d7c80c",
+        "signature": "7b2782aa6a40ceaaed134aa40c46965611f6d8c700ab8519f4a3daf459d39771",
         "affectsGlobalScope": false
       },
       "../node_modules/@types/scheduler/index.d.ts": {

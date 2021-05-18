@@ -247,6 +247,10 @@ export function useTimer(interval = 1000) {
   return time;
 }
 
+export const DEFAULT_ACTION = () => "__initialized__";
+
+export type ActionType<P> = () => P | ReturnType<typeof DEFAULT_ACTION>;
+
 /**
  * 该 function 为 action，result 模式
  *
@@ -256,23 +260,18 @@ export function useTimer(interval = 1000) {
  * @return {*}
  */
 export function useDispatch<P extends any[], R>(func: FunctionType<P, R>) {
-  const [action, setAction] = useState<() => P | "__initialized__">(
-    () => () => "__initialized__"
-  );
+  const [action, dispatch] = useState<ActionType<P>>(() => DEFAULT_ACTION);
   const [result, setResult] = useState<R>();
   const funcRef = useMemoRef(func);
   useEffect(() => {
     const params = action();
-    if (params !== "__initialized__") {
-      setResult(funcRef.current(...params));
+    if (params !== DEFAULT_ACTION()) {
+      setResult(funcRef.current(...(params as P)));
     }
   }, [action]);
-  const dispatch = useCallback((...args: Parameters<typeof func>) => {
-    setAction(() => args);
-  }, []);
-  return [dispatch, action, result] as [
-    (...args: Parameters<typeof func>) => void,
-    () => P | "__initialized__",
+  return [action, dispatch, result] as [
+    ActionType<P>,
+    (args: () => P) => void,
     R
   ];
 }

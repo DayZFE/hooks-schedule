@@ -94,6 +94,8 @@ export declare function useThrottle<P extends any[], R>(func: FunctionType<P, R>
  * @return {*}
  */
 export declare function useTimer(interval?: number): number;
+export declare const DEFAULT_ACTION: () => string;
+export declare type ActionType<P> = () => P | ReturnType<typeof DEFAULT_ACTION>;
 /**
  * 该 function 为 action，result 模式
  *
@@ -102,4 +104,4 @@ export declare function useTimer(interval?: number): number;
  * @param {FunctionType<P, R>} func
  * @return {*}
  */
-export declare function useDispatch<P extends any[], R>(func: FunctionType<P, R>): [(...args: Parameters<typeof func>) => void, () => P | "__initialized__", R];
+export declare function useDispatch<P extends any[], R>(func: FunctionType<P, R>): [ActionType<P>, (args: () => P) => void, R];

@@ -53,30 +53,53 @@ export interface RefInfo<T> {
  * @return {*}
  */
 export declare function useInfoRef<T>(cb: () => T, deps?: DependencyList, len?: number): import("react").MutableRefObject<RefInfo<T>>;
+export declare type FunctionType<P extends any[], R> = (...args: P) => R;
 /**
  * delay time
  *
- * @template T
- * @param {(...args: T) => void} func
+ * @export
+ * @template P
+ * @template R
+ * @param {FunctionType<P,R>} func
  * @param {number} [t=1000]
  * @return {*}
  */
-export declare function useDelay<T extends any[]>(func: (...args: T) => void, t?: number): [(...args: T) => void, () => void];
+export declare function useDelay<P extends any[], R>(func: FunctionType<P, R>, t?: number): [(...args: Parameters<typeof func>) => void, () => void, R, boolean];
 /**
  * 防抖
  *
- * @template T
- * @param {(...args: T) => void} func
+ * @export
+ * @template P
+ * @template R
+ * @param {FunctionType<P,R>} func
  * @param {number} [t=1000]
  * @return {*}
  */
-export declare function useDebounce<T extends any[]>(func: (...args: T) => void, t?: number): (...args: T) => void;
+export declare function useDebounce<P extends any[], R>(func: FunctionType<P, R>, t?: number): [(...args: Parameters<typeof func>) => void, R, boolean];
 /**
  * 节流
  *
- * @template T
- * @param {(...args: T) => void} func
+ * @export
+ * @template P
+ * @template R
+ * @param {FunctionType<P,R>} func
  * @param {number} [t=1000]
  * @return {*}
  */
-export declare function useThrottle<T extends any[]>(func: (...args: T) => void, t?: number): (...args: T) => void;
+export declare function useThrottle<P extends any[], R>(func: FunctionType<P, R>, t?: number): [(...args: Parameters<typeof func>) => void, R, boolean];
+/**
+ * get time interval
+ *
+ * @param {number} [interval=1000]
+ * @return {*}
+ */
+export declare function useTimer(interval?: number): number;
+/**
+ * 该 function 为 action，result 模式
+ *
+ * @template P
+ * @template R
+ * @param {FunctionType<P, R>} func
+ * @return {*}
+ */
+export declare function useDispatch<P extends any[], R>(func: FunctionType<P, R>): [(...args: Parameters<typeof func>) => void, () => P | "__initialized__", R];

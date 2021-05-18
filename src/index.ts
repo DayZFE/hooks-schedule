@@ -120,80 +120,99 @@ export function useInfoRef<T>(cb: () => T, deps: DependencyList = [], len = 0) {
 
 /// --------- 以下 hooks 都只针对函数， 用于 callback
 
+export type FunctionType<P extends any[], R> = (...args: P) => R;
+
 /**
  * delay time
  *
- * @template T
- * @param {(...args: T) => void} func
+ * @export
+ * @template P
+ * @template R
+ * @param {FunctionType<P,R>} func
  * @param {number} [t=1000]
  * @return {*}
  */
-export function useDelay<T extends any[]>(
-  func: (...args: T) => void,
+export function useDelay<P extends any[], R>(
+  func: FunctionType<P, R>,
   t = 1000
 ) {
+  const [result, setResult] = useState<R>();
+  const [loading, setLoading] = useState(false);
   const timeoutRef = useRef<number>(0);
-  const start = useCallback(
-    (...args: T) => {
-      timeoutRef.current = setTimeout(() => {
-        func(...args);
-      }, t);
-    },
-    [func, t]
-  );
+  const funcRef = useMemoRef(func);
+  const tRef = useMemoRef(t);
+  const start = useCallback((...args: Parameters<typeof func>) => {
+    setLoading(true);
+    timeoutRef.current = setTimeout(() => {
+      setResult(funcRef.current(...args));
+      setLoading(false);
+    }, tRef.current);
+  }, []);
   const close = useCallback(() => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
   }, []);
-  return [start, close] as [(...args: T) => void, () => void];
+  return [start, close, result, loading] as [
+    (...args: Parameters<typeof func>) => void,
+    () => void,
+    R,
+    boolean
+  ];
 }
 
 /**
  * 防抖
  *
- * @template T
- * @param {(...args: T) => void} func
+ * @export
+ * @template P
+ * @template R
+ * @param {FunctionType<P,R>} func
  * @param {number} [t=1000]
  * @return {*}
  */
-export function useDebounce<T extends any[]>(
-  func: (...args: T) => void,
+export function useDebounce<P extends any[], R>(
+  func: FunctionType<P, R>,
   t = 1000
 ) {
-  const [start, close] = useDelay(func, t);
-  return useCallback(
-    (...args: T) => {
+  const [start, close, result, loading] = useDelay(func, t);
+  const dispatch = useCallback(
+    (...args: Parameters<typeof func>) => {
       close();
       start(...args);
     },
     [start, close]
   );
+  return [dispatch, result, loading] as [
+    (...args: Parameters<typeof func>) => void,
+    R,
+    boolean
+  ];
 }
 
 /**
  * 节流
  *
- * @template T
- * @param {(...args: T) => void} func
+ * @export
+ * @template P
+ * @template R
+ * @param {FunctionType<P,R>} func
  * @param {number} [t=1000]
  * @return {*}
  */
-export function useThrottle<T extends any[]>(
-  func: (...args: T) => void,
+export function useThrottle<P extends any[], R>(
+  func: FunctionType<P, R>,
   t = 1000
 ) {
   const canRun = useRef(true);
-  const trigger = useCallback(
-    (...args: T) => {
-      canRun.current = true;
-      func(...args);
-    },
-    [func]
-  );
-  const [start] = useDelay(trigger, t);
-  return useCallback(
-    (...args: T) => {
+  const funcRef = useMemoRef(func);
+  const trigger = useCallback((...args: Parameters<typeof func>) => {
+    canRun.current = true;
+    return funcRef.current(...args);
+  }, []);
+  const [start, _, result, loading] = useDelay(trigger, t);
+  const dispatch = useCallback(
+    (...args: Parameters<typeof func>) => {
       if (canRun.current === true) {
         canRun.current = false;
         start(...args);
@@ -201,17 +220,59 @@ export function useThrottle<T extends any[]>(
     },
     [start]
   );
+  return [dispatch, result, loading] as [
+    (...args: Parameters<typeof func>) => void,
+    R,
+    boolean
+  ];
 }
 
-function useTimer(interval = 1000) {
+/**
+ * get time interval
+ *
+ * @param {number} [interval=1000]
+ * @return {*}
+ */
+export function useTimer(interval = 1000) {
   const [time, setTime] = useState(() => Date.now());
+  const intervalRef = useMemoRef(interval);
   useEffect(() => {
     const i = setInterval(() => {
       setTime(Date.now());
-    }, interval);
+    }, intervalRef.current);
     return () => {
       clearInterval(i);
     };
-  }, [interval]);
+  }, []);
   return time;
+}
+
+/**
+ * 该 function 为 action，result 模式
+ *
+ * @template P
+ * @template R
+ * @param {FunctionType<P, R>} func
+ * @return {*}
+ */
+export function useDispatch<P extends any[], R>(func: FunctionType<P, R>) {
+  const [action, setAction] = useState<() => P | "__initialized__">(
+    () => () => "__initialized__"
+  );
+  const [result, setResult] = useState<R>();
+  const funcRef = useMemoRef(func);
+  useEffect(() => {
+    const params = action();
+    if (params !== "__initialized__") {
+      setResult(funcRef.current(...params));
+    }
+  }, [action]);
+  const dispatch = useCallback((...args: Parameters<typeof func>) => {
+    setAction(() => args);
+  }, []);
+  return [dispatch, action, result] as [
+    (...args: Parameters<typeof func>) => void,
+    () => P | "__initialized__",
+    R
+  ];
 }

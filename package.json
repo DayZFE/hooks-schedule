@@ -1,6 +1,6 @@
 {
   "name": "hooks-schedule",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "let you control the state's mutation schedule in useEffect and useLayoutEffect easily",
   "author": "DayZFE",
   "license": "MIT",

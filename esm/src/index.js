@@ -21,7 +21,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from) {
     return to;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useThrottle = exports.useDebounce = exports.useDelay = exports.useInfoRef = exports.useMemoRef = exports.useEndRef = exports.useStartedRef = void 0;
+exports.useDispatch = exports.useTimer = exports.useThrottle = exports.useDebounce = exports.useDelay = exports.useInfoRef = exports.useMemoRef = exports.useEndRef = exports.useStartedRef = void 0;
 var react_1 = require("react");
 /**
  * 指定依赖的初次调度是否已进行
@@ -115,47 +115,56 @@ function useInfoRef(cb, deps, len) {
     return result;
 }
 exports.useInfoRef = useInfoRef;
-/// --------- 以下 hooks 都只针对函数， 用于 callback
 /**
  * delay time
  *
- * @template T
- * @param {(...args: T) => void} func
+ * @export
+ * @template P
+ * @template R
+ * @param {FunctionType<P,R>} func
  * @param {number} [t=1000]
  * @return {*}
  */
 function useDelay(func, t) {
     if (t === void 0) { t = 1000; }
+    var _a = __read(react_1.useState(), 2), result = _a[0], setResult = _a[1];
+    var _b = __read(react_1.useState(false), 2), loading = _b[0], setLoading = _b[1];
     var timeoutRef = react_1.useRef(0);
+    var funcRef = useMemoRef(func);
+    var tRef = useMemoRef(t);
     var start = react_1.useCallback(function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
+        setLoading(true);
         timeoutRef.current = setTimeout(function () {
-            func.apply(void 0, __spreadArray([], __read(args)));
-        }, t);
-    }, [func, t]);
+            setResult(funcRef.current.apply(funcRef, __spreadArray([], __read(args))));
+            setLoading(false);
+        }, tRef.current);
+    }, []);
     var close = react_1.useCallback(function () {
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
         }
     }, []);
-    return [start, close];
+    return [start, close, result, loading];
 }
 exports.useDelay = useDelay;
 /**
  * 防抖
  *
- * @template T
- * @param {(...args: T) => void} func
+ * @export
+ * @template P
+ * @template R
+ * @param {FunctionType<P,R>} func
  * @param {number} [t=1000]
  * @return {*}
  */
 function useDebounce(func, t) {
     if (t === void 0) { t = 1000; }
-    var _a = __read(useDelay(func, t), 2), start = _a[0], close = _a[1];
-    return react_1.useCallback(function () {
+    var _a = __read(useDelay(func, t), 4), start = _a[0], close = _a[1], result = _a[2], loading = _a[3];
+    var dispatch = react_1.useCallback(function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
@@ -163,29 +172,33 @@ function useDebounce(func, t) {
         close();
         start.apply(void 0, __spreadArray([], __read(args)));
     }, [start, close]);
+    return [dispatch, result, loading];
 }
 exports.useDebounce = useDebounce;
 /**
  * 节流
  *
- * @template T
- * @param {(...args: T) => void} func
+ * @export
+ * @template P
+ * @template R
+ * @param {FunctionType<P,R>} func
  * @param {number} [t=1000]
  * @return {*}
  */
 function useThrottle(func, t) {
     if (t === void 0) { t = 1000; }
     var canRun = react_1.useRef(true);
+    var funcRef = useMemoRef(func);
     var trigger = react_1.useCallback(function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
         canRun.current = true;
-        func.apply(void 0, __spreadArray([], __read(args)));
-    }, [func]);
-    var _a = __read(useDelay(trigger, t), 1), start = _a[0];
-    return react_1.useCallback(function () {
+        return funcRef.current.apply(funcRef, __spreadArray([], __read(args)));
+    }, []);
+    var _a = __read(useDelay(trigger, t), 4), start = _a[0], _ = _a[1], result = _a[2], loading = _a[3];
+    var dispatch = react_1.useCallback(function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
@@ -195,19 +208,56 @@ function useThrottle(func, t) {
             start.apply(void 0, __spreadArray([], __read(args)));
         }
     }, [start]);
+    return [dispatch, result, loading];
 }
 exports.useThrottle = useThrottle;
+/**
+ * get time interval
+ *
+ * @param {number} [interval=1000]
+ * @return {*}
+ */
 function useTimer(interval) {
     if (interval === void 0) { interval = 1000; }
     var _a = __read(react_1.useState(function () { return Date.now(); }), 2), time = _a[0], setTime = _a[1];
+    var intervalRef = useMemoRef(interval);
     react_1.useEffect(function () {
         var i = setInterval(function () {
             setTime(Date.now());
-        }, interval);
+        }, intervalRef.current);
         return function () {
             clearInterval(i);
         };
-    }, [interval]);
+    }, []);
     return time;
 }
+exports.useTimer = useTimer;
+/**
+ * 该 function 为 action，result 模式
+ *
+ * @template P
+ * @template R
+ * @param {FunctionType<P, R>} func
+ * @return {*}
+ */
+function useDispatch(func) {
+    var _a = __read(react_1.useState(function () { return function () { return "__initialized__"; }; }), 2), action = _a[0], setAction = _a[1];
+    var _b = __read(react_1.useState(), 2), result = _b[0], setResult = _b[1];
+    var funcRef = useMemoRef(func);
+    react_1.useEffect(function () {
+        var params = action();
+        if (params !== "__initialized__") {
+            setResult(funcRef.current.apply(funcRef, __spreadArray([], __read(params))));
+        }
+    }, [action]);
+    var dispatch = react_1.useCallback(function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        setAction(function () { return args; });
+    }, []);
+    return [dispatch, action, result];
+}
+exports.useDispatch = useDispatch;
 //# sourceMappingURL=index.js.map
